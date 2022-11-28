@@ -349,7 +349,7 @@ public class RemoveImageCommand<T extends RemoveImageParameters> extends BaseIma
 
     public void onFailed() {
         if (getParameters().getAsyncTaskErrorMessage() != null) {
-            Guid diskId = getParameters().getDiskImage().getId();
+            Guid diskId = getImageGroupId();
             List<Guid> snapshotIds = diskImageDao
                     .getAllSnapshotsForImageGroup(diskId).stream()
                     .map(DiskImage::getImageId)
