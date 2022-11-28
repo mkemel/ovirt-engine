@@ -315,16 +315,16 @@ public class LiveMigrateDiskCommand<T extends LiveMigrateDiskParameters> extends
         RemoveImageParameters removeImageParams =
                 new RemoveImageParameters(imageId);
         removeImageParams.setStorageDomainId(storageDomainId);
-        removeImageParams.setParentCommand(ActionType.RemoveImage);
+        removeImageParams.setParentCommand(getActionType());
+        removeImageParams.setParentParameters(getParameters());
+        removeImageParams.setEndProcedure(EndProcedure.COMMAND_MANAGED);
         removeImageParams.setDbOperationScope(ImageDbOperationScope.NONE);
         removeImageParams.setShouldLockImage(false);
         ActionReturnValue returnValue = runInternalAction(
                 ActionType.RemoveImage,
                 removeImageParams,
                 cloneContextAndDetachFromParent());
-        if (returnValue.getSucceeded()) {
-            startPollingAsyncTasks(returnValue.getInternalVdsmTaskIdList());
-        } else {
+        if (!returnValue.getSucceeded()) {
             addCustomValue("DiskAlias", baseDiskDao.get(imageGroupId).getDiskAlias());
             addCustomValue("StorageDomainName", storageDomainStaticDao.get(storageDomainId).getName());
             addCustomValue("UserName", getUserName());
@@ -341,7 +341,6 @@ public class LiveMigrateDiskCommand<T extends LiveMigrateDiskParameters> extends
         }
         removeSnapshotParameters.setParentParameters(parameters);
         removeSnapshotParameters.setNeedsLocking(false);
-
 
         runInternalAction(ActionType.RemoveSnapshot,
                 removeSnapshotParameters,

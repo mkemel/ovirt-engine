@@ -51,7 +51,7 @@ public class RemoveImageCommandCallback implements CommandCallback {
             command.setCommandStatus(CommandStatus.SUCCEEDED);
             command.persistCommand(command.getParameters().getParentCommand());
             log.info("Remove image command has completed successfully for disk '{}' with async task(s) '{}'.",
-                    command.getParameters().getDiskImage().getId(), taskIds);
+                    command.getParameters().getImageGroupID(), taskIds);
         } else {
             RuntimeException exception = failedTasks.get(0).getException();
             if (exception instanceof VDSErrorException) {
@@ -61,7 +61,7 @@ public class RemoveImageCommandCallback implements CommandCallback {
             command.setSucceeded(false);
             command.setCommandStatus(CommandStatus.FAILED);
             log.info("Remove image command has failed for disk '{}' with async task(s) '{}'.",
-                    command.getParameters().getDiskImage().getId(), failedTasks);
+                    command.getParameters().getImageGroupID(), failedTasks);
         }
         command.persistCommand(command.getParameters().getParentCommand());
     }
